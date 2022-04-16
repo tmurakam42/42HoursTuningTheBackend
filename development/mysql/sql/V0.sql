@@ -72,7 +72,7 @@ CREATE TABLE `category_group` (
 
 CREATE TABLE `session` (
     `session_id` bigint NOT NULL AUTO_INCREMENT,
-    `value` VARCHAR(256) NOT NULL,
+    INDEX `value` VARCHAR(256) NOT NULL,
     `linked_user_id` bigint NOT NULL,
     `created_at` TIMESTAMP NOT NULL,
     PRIMARY KEY (`session_id`)
@@ -84,5 +84,3 @@ CREATE TABLE `file` (
     `name` VARCHAR(256) NOT NULL,
     PRIMARY KEY (`file_id`)
 );
-
-ALTER TABLE session ADD INDEX session_value_index (value);
