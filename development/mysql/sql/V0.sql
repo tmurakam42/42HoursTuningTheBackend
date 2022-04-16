@@ -84,3 +84,8 @@ CREATE TABLE `file` (
     `name` VARCHAR(256) NOT NULL,
     PRIMARY KEY (`file_id`)
 );
+
+CREATE TABLE `record_item_file2` (
+    `item_id` bigint NOT NULL AUTO_INCREMENT,
+    PRIMARY KEY (`file_id2`)
+);
