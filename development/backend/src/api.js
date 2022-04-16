@@ -1,15 +1,19 @@
+/* fsはファイルを扱うためのオブジェクト? */
 const fs = require('fs');
+/* uuidは被らないIDを生成？ */
 const { v4: uuidv4 } = require('uuid');
 
+/* jimpは画像処理？ */
 const jimp = require('jimp');
 
+/* データベースを扱う系？ */
 const mysql = require('mysql2/promise');
 
 
 // MEMO: 設定項目はここを参考にした
 // https://github.com/sidorares/node-mysql2#api-and-configuration
 // https://github.com/mysqljs/mysql
-const mysqlOption = {
+const mysqlOption = {/* データベースにアクセスするための色々なもの? */
   host: 'mysql',
   user: 'backend',
   password: 'backend',
@@ -17,11 +21,11 @@ const mysqlOption = {
   waitForConnections: true,
   connectionLimit: 10,
 };
-const pool = mysql.createPool(mysqlOption);
+const pool = mysql.createPool(mysqlOption);/* データベースにアクセスしたのかな？ */ /* 否、アクセスはgetConnectionらしいがそれがない? */
 
 const mylog = (obj) => {
-  if (Array.isArray(obj)) {
-    for (const e of obj) {
+  if (Array.isArray(obj)) {/* objが配列かどうか？ */
+    for (const e of obj) {/* objを回す？ */
       console.log(e);
     }
     return;
@@ -30,18 +34,18 @@ const mylog = (obj) => {
 };
 
 const getLinkedUser = async (headers) => {
-  const target = headers['x-app-key'];
+  const target = headers['x-app-key'];/* headers.x-app-keyと同義？ */
   mylog(target);
   const qs = `select * from session where value = ?`;
 
-  const [rows] = await pool.query(qs, [`${target}`]);
+  const [rows] = await pool.query(qs, [`${target}`]);/* const [rows]は配列を定義かな？ */ /* queryはSQLの実行 query(SQL命令, コールバック関数) *//* ?に[`${target}`]が入る */ /* awaitは並列で処理されているものが終わるまで待つ */
 
-  if (rows.length !== 1) {
+  if (rows.length !== 1) {/* 実行できなかった時のエラー処理 */
     mylog('セッションが見つかりませんでした。');
     return undefined;
   }
 
-  return { user_id: rows[0].linked_user_id };
+  return { user_id: rows[0].linked_user_id };/* linked_user_idが意味不？ */
 };
 
 const filePath = 'file/';
@@ -49,17 +53,17 @@ const filePath = 'file/';
 // POST /records
 // 申請情報登録
 const postRecords = async (req, res) => {
-  let user = await getLinkedUser(req.headers);
+  let user = await getLinkedUser(req.headers);/* リクエストしてきたuserの情報をを格納？ */
 
-  if (!user) {
+  if (!user) {/* userがなかったら404に */
     res.status(401).send();
     return;
   }
 
-  mylog(user);
+  mylog(user);/* USERのIDをターミナルに出力 */
 
-  const body = req.body;
-  mylog(body);
+  const body = req.body;/* リクエストの内容を格納 */
+  mylog(body);/* リクエストの内容をターミナルに出力 */
 
   let [rows] = await pool.query(
     `select * from group_member where user_id = ?
@@ -67,7 +71,7 @@ const postRecords = async (req, res) => {
     [user.user_id],
   );
 
-  if (rows.length !== 1) {
+  if (rows.length !== 1) {/* エラー処理 */
     mylog('申請者のプライマリ組織の解決に失敗しました。');
     res.status(400).send();
     return;
@@ -93,7 +97,7 @@ const postRecords = async (req, res) => {
     ],
   );
 
-  for (const e of body.fileIdList) {
+  for (const e of body.fileIdList) {/* -----------このfor文のawaitはやばい--------------- */
     await pool.query(
       `insert into record_item_file
         (linked_record_id, linked_file_id, linked_thumbnail_file_id, created_at)
