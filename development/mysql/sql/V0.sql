@@ -72,7 +72,7 @@ CREATE TABLE `category_group` (
 
 CREATE TABLE `session` (
     `session_id` bigint NOT NULL AUTO_INCREMENT,
-    INDEX `value` VARCHAR(256) NOT NULL,
+    `value` VARCHAR(256) NOT NULL,
     `linked_user_id` bigint NOT NULL,
     `created_at` TIMESTAMP NOT NULL,
     PRIMARY KEY (`session_id`)
@@ -83,9 +83,4 @@ CREATE TABLE `file` (
     `path` VARCHAR(1024) NOT NULL,
     `name` VARCHAR(256) NOT NULL,
     PRIMARY KEY (`file_id`)
-);
-
-CREATE TABLE `record_item_file2` (
-    `item_id` bigint NOT NULL AUTO_INCREMENT,
-    PRIMARY KEY (`file_id2`)
 );
