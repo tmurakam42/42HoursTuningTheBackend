@@ -1,0 +1,1 @@
+ALTER TABLE record_item_file ADD INDEX record_item_filelinked_record_id (linked_record_id);
