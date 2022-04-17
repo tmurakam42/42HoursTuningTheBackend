@@ -1,0 +1,1 @@
+ALTER TABLE group_member ADD INDEX group_member_is_primary_index (is_primary);
